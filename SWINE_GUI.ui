@@ -39,7 +39,7 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>../../.designer/backup/icon.ico</normaloff>../../.designer/backup/icon.ico</iconset>
+    <normaloff>../.designer/backup/icon.ico</normaloff>../.designer/backup/icon.ico</iconset>
   </property>
   <property name="autoFillBackground">
    <bool>false</bool>
@@ -583,6 +583,9 @@ per simulation:</string>
      </item>
      <item>
       <widget class="MatplotlibWidget" name="plt_widget" native="true">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="minimumSize">
         <size>
          <width>590</width>

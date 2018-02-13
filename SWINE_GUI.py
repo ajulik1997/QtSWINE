@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'C:\Users\ISIS STFC\Desktop\SWINE_GUI\SWINE_GUI.ui'
+# Form implementation generated from reading ui file 'C:\SWINE_GUI\SWINE_GUI.ui'
 #
 # Created by: PyQt4 UI code generator 4.11.4
 #
@@ -37,7 +37,7 @@ class Ui_MainWindow(object):
         font.setPointSize(12)
         MainWindow.setFont(font)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(_fromUtf8("../../.designer/backup/icon.ico")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8("../.designer/backup/icon.ico")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainWindow.setWindowIcon(icon)
         MainWindow.setAutoFillBackground(False)
         MainWindow.setDocumentMode(False)
@@ -261,6 +261,7 @@ class Ui_MainWindow(object):
         self.line.setObjectName(_fromUtf8("line"))
         self.h1.addWidget(self.line)
         self.plt_widget = MatplotlibWidget(self.horizontalLayoutWidget)
+        self.plt_widget.setEnabled(False)
         self.plt_widget.setMinimumSize(QtCore.QSize(590, 590))
         self.plt_widget.setMaximumSize(QtCore.QSize(590, 590))
         self.plt_widget.setObjectName(_fromUtf8("plt_widget"))
