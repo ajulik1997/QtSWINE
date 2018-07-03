@@ -6,7 +6,7 @@ from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as Navigatio
 class MatplotlibWidget(QtGui.QWidget):
 	def __init__(self, parent=None, *args, **kwargs):
 		super(MatplotlibWidget, self).__init__(parent)
-		self.figure = Figure(*args, **kwargs)
+		self.figure = Figure(dpi=72, tight_layout=True, *args, **kwargs)
 		self.canvas = FigureCanvas(self.figure)
 		self.toolbar = NavigationToolbar(self.canvas, self)
 		layout = QtGui.QVBoxLayout()
