@@ -16,9 +16,12 @@ from glob import glob
 from multiprocessing import cpu_count
 from subprocess import check_call
 from sympy import *
+from time import sleep
 import sys, os
 import numpy as np
+from shutil import rmtree
 import SWINE_GUI, SWINE_GUI_cstinstr, SWINE_GUI_pselect, SWINE_GUI_prgbar
+import MatplotlibWidget
 
 ######################### GLOBAL VARS #########################
 
@@ -47,25 +50,41 @@ highlightPoints = []	##??
 
 experimentCalls = []				## McStas calls used for generating data
 
+plotDatadir = ''
+
 ######################### WORKER THREADS #########################
 
 class runSimulationThread(QtCore.QThread):
-	def __init__(self):
+	def __init__(self, datafile):
 		QtCore.QThread.__init__(self)
+		self.datafile = datafile
 		
 	def __del__(self):
 		self.wait()
 	
 	def run(self):
 		global experimentCalls; global cores
-		if not os.path.exists(os.path.split(os.path.realpath(__file__))[0]+'\\temp'): os.mkdir(os.path.split(os.path.realpath(__file__))[0]+'\\temp')
+		if os.path.exists(os.path.split(os.path.realpath(__file__))[0]+'\\temp'): rmtree(os.path.split(os.path.realpath(__file__))[0]+'\\temp')
+		sleep(0.1)
+		os.mkdir(os.path.split(os.path.realpath(__file__))[0]+'\\temp')
 		self.emit(QtCore.SIGNAL('reset()'))
-		self.emit(QtCore.SIGNAL('setText(QString)'), "Running simulations...")
+		self.emit(QtCore.SIGNAL('setText(QString)'), "Running simulations ...")
 		for i in range(0,len(experimentCalls),cores):
-			print(i,len(experimentCalls))
-			processes = [check_call(" ".join(p)) for p in experimentCalls[i:i+cores]]
-			for p in processes: p.wait()
+			check_call(" | ".join([" ".join(p) for p in experimentCalls[i:i+cores]]))
 			self.emit(QtCore.SIGNAL('setValue(int)'), int((i/len(experimentCalls))*100))
+		
+		global resolutionData; global intensityData; global instr_params; global instr_dir
+		self.emit(QtCore.SIGNAL('reset()'))
+		self.emit(QtCore.SIGNAL('setText(QString)'), "Analyzing data ...")
+		for index, folder in enumerate(os.listdir(os.path.split(os.path.realpath(__file__))[0]+'\\temp')):
+			with open(os.path.split(os.path.realpath(__file__))[0]+'\\temp'+'\\'+folder+'\\'+instr_params[5]+'.dat', 'r') as file:
+				for line in file:
+					if 'values:' in line:
+						intensityData[int(folder[1:-1].split('][')[0]), int(folder[1:-1].split('][')[1])] = line.split(' ')[2]
+						self.emit(QtCore.SIGNAL('setValue(int)'), int((index/len(os.listdir(os.path.split(os.path.realpath(__file__))[0]+'\\temp')))*100))
+		
+		np.savez_compressed(os.path.split(instr_dir[1:-1])[0]+'\\'+self.datafile, intensity=intensityData, resolution=resolutionData)
+		rmtree(os.path.split(os.path.realpath(__file__))[0]+'\\temp')
 		
 class dataCollectionThread(QtCore.QThread):
 	def __init__(self, angle, pumbra, steps, neutrons):
@@ -229,6 +248,9 @@ class MainApp(QtGui.QMainWindow, SWINE_GUI.Ui_MainWindow):
 		self.rdb_cust.clicked.connect(self.setCustomInstrument)
 		self.rdb_def.clicked.connect(self.setDefaultInstrument)
 		self.btn_gendata.clicked.connect(self.generateData)
+		self.btn_data.clicked.connect(self.loadData)
+		self.btn_plot.clicked.connect(self.plot1)
+		self.btn_plot_2.clicked.connect(self.plot2)
 	
 	def getMcstasDir(self):
 		directory = QtGui.QFileDialog.getExistingDirectory(self, "Select location on McStas")
@@ -285,16 +307,14 @@ class MainApp(QtGui.QMainWindow, SWINE_GUI.Ui_MainWindow):
 			self.instrPosDialog.spb_samp.setValue(14.03)
 	
 	def setEnabled(self):
-		for item in [self.lbl_data, self.lbl_angle, self.lbl_penumbra, self.lbl_steps, self.lbl_neutrons, self.lbl_description,
-					 self.box_angle, self.box_penumbra, self.box_steps, self.box_neutrons, self.txt_description,
-					 self.btn_gendata, self.txt_description_2, self.lbl_plot, self.btn_data, self.lbl_dataset, self.btn_plot, self.btn_plot_2]:
+		for item in [self.lbl_data, self.lbl_angle, self.lbl_penumbra, self.lbl_steps, self.lbl_neutrons,
+					 self.box_angle, self.box_penumbra, self.box_steps, self.box_neutrons, self.btn_gendata, self.txt_description_2]:
 			item.setEnabled(True)
 		self.recompile()
 	
 	def setDisabled(self):
-		for item in [self.lbl_data, self.lbl_angle, self.lbl_penumbra, self.lbl_steps, self.lbl_neutrons, self.lbl_description,
-					 self.box_angle, self.box_penumbra, self.box_steps, self.box_neutrons, self.txt_description,
-					 self.btn_gendata, self.txt_description_2, self.lbl_plot, self.btn_data, self.lbl_dataset, self.btn_plot, self.btn_plot_2]:
+		for item in [self.lbl_data, self.lbl_angle, self.lbl_penumbra, self.lbl_steps, self.lbl_neutrons,
+					 self.box_angle, self.box_penumbra, self.box_steps, self.box_neutrons, self.btn_gendata, self.txt_description_2]:
 			item.setEnabled(False)
 						
 	def recompile(self):		
@@ -327,12 +347,40 @@ class MainApp(QtGui.QMainWindow, SWINE_GUI.Ui_MainWindow):
 	
 	def runSimulations(self):
 		self.loadingBar.show()
-		self.simulation = runSimulationThread()
+		self.simulation = runSimulationThread(datafile = self.txt_description_2.text())
 		self.connect(self.simulation, QtCore.SIGNAL('reset()'), self.loadingBar.reset)
 		self.connect(self.simulation, QtCore.SIGNAL('setText(QString)'), self.loadingBar.setText)
 		self.connect(self.simulation, QtCore.SIGNAL('setValue(int)'), self.loadingBar.setValue)
 		self.connect(self.simulation, QtCore.SIGNAL('finished()'), self.loadingBar.hide)
 		self.simulation.start()
+	
+	def loadData(self):
+		global plotDatadir;
+		plotDatadir = QtGui.QFileDialog.getOpenFileName(self, "Select data file", os.path.split(os.path.realpath(__file__))[0], "*.npz")
+		if plotDatadir:
+			self.lbl_dataset.setText('Data set: ' + os.path.basename(plotDatadir))
+			self.plt_widget.setEnabled(True)
+	
+	def plot1(self):
+		global plotDatadir;
+		if plotDatadir == '':
+			QtGui.QMessageBox.warning(self, "Data not selected", "You have not loaded any data to plot!", QtGui.QMessageBox.Retry)
+		else:
+			self.plt_widget.figure.clear()
+			ax = self.plt_widget.figure.add_subplot(111)
+			ax.set_title(self.txt_description.text())
+			
+			data = np.load(plotDatadir)['intensity']
+			heatmap = ax.imshow(data, cmap='hot', interpolation='nearest')
+			colorbar = self.plt_widget.figure.colorbar(heatmap)
+			self.plt_widget.figure.canvas.draw()
+	
+	def plot2(self):
+		global plotDatadir;
+		if plotDatadir == '':
+			QtGui.QMessageBox.warning(self, "Data not selected", "You have not loaded any data to plot!", QtGui.QMessageBox.Retry)
+		else:
+			data = np.load(plotDatadir)['resolution']
 
 ######################### LAUNCHER #########################
 
