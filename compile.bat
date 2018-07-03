@@ -3,6 +3,7 @@ C:\mcstas-2.4.1\miniconda3\Scripts\pyinstaller main.py ^
 	--clean ^
 	--onefile ^
 	--name="QtSWINE" ^
-	--add-data="default.instr;instr" ^
+	--add-data="default.instr;res" ^
 	--icon="icon.ico" ^
-	--uac-admin
+	--uac-admin ^
+	--noconsole
