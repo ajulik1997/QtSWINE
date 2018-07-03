@@ -83,7 +83,7 @@ class runSimulationThread(QtCore.QThread):
 						intensityData[int(folder[1:-1].split('][')[0]), int(folder[1:-1].split('][')[1])] = line.split(' ')[2]
 						self.emit(QtCore.SIGNAL('setValue(int)'), int((index/len(os.listdir(os.path.split(os.path.realpath(__file__))[0]+'\\temp')))*100))
 		
-		np.savez_compressed(os.path.split(instr_dir[1:-1])[0]+'\\'+self.datafile, intensity=intensityData, resolution=resolutionData)
+		np.savez_compressed(os.path.split(os.path.realpath(__file__))[0]+'\\'+self.datafile, intensity=intensityData, resolution=resolutionData)
 		rmtree(os.path.split(os.path.realpath(__file__))[0]+'\\temp')
 		
 class dataCollectionThread(QtCore.QThread):
@@ -238,7 +238,7 @@ class MainApp(QtGui.QMainWindow, SWINE_GUI.Ui_MainWindow):
 		super(MainApp, self).__init__(parent)
 		self.setupUi(self)
 
-		QtGui.QMessageBox.information(self, "Path warning", "Make sure no paths you use in this application include a space. \nSpaces are not handled well by McStas and GCC and you will receive an error and/or obtain incorrect results.", QtGui.QMessageBox.Ok)
+		QtGui.QMessageBox.information(self, "Path warning", "Make sure no paths you use in this application include a space. \nSpaces are not handled well by McStas and GCC and you will receive an error and/or obtain incorrect results. \nFor best results, run this application from the root directory.", QtGui.QMessageBox.Ok)
 
 		self.customInstrDialog = CustomInstr(self)
 		self.instrPosDialog = PositionSelect(self)
@@ -369,10 +369,14 @@ class MainApp(QtGui.QMainWindow, SWINE_GUI.Ui_MainWindow):
 			self.plt_widget.figure.clear()
 			ax = self.plt_widget.figure.add_subplot(111)
 			ax.set_title(self.txt_description.text())
+			ax.set_ylabel("slit 1 width (mm)")
+			ax.set_xlabel("slit 2 width (mm)")
 			
-			data = np.load(plotDatadir)['intensity']
-			heatmap = ax.imshow(data, cmap='hot', interpolation='nearest')
+			data = np.load(plotDatadir)
+			heatmap = ax.imshow(data['intensity'], cmap='inferno', interpolation='none')
 			colorbar = self.plt_widget.figure.colorbar(heatmap)
+			contours = ax.contour(data['resolution'], antialiased=True)
+			ax.clabel(contours, inline=True)
 			self.plt_widget.figure.canvas.draw()
 	
 	def plot2(self):
