@@ -478,7 +478,7 @@ per simulation:</string>
          <item>
           <widget class="QLabel" name="lbl_plot">
            <property name="enabled">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
            <property name="maximumSize">
             <size>
@@ -497,7 +497,7 @@ per simulation:</string>
          <item>
           <widget class="QPushButton" name="btn_data">
            <property name="enabled">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
            <property name="text">
             <string>Load data set</string>
@@ -507,7 +507,7 @@ per simulation:</string>
          <item>
           <widget class="QLabel" name="lbl_dataset">
            <property name="enabled">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
            <property name="maximumSize">
             <size>
@@ -531,7 +531,7 @@ per simulation:</string>
            <item row="1" column="0">
             <widget class="QPushButton" name="btn_plot">
              <property name="enabled">
-              <bool>false</bool>
+              <bool>true</bool>
              </property>
              <property name="text">
               <string>PLOT [s1|s2]</string>
@@ -541,7 +541,7 @@ per simulation:</string>
            <item row="1" column="1">
             <widget class="QPushButton" name="btn_plot_2">
              <property name="enabled">
-              <bool>false</bool>
+              <bool>true</bool>
              </property>
              <property name="text">
               <string>PLOT [s2|Lum]</string>
@@ -551,14 +551,14 @@ per simulation:</string>
            <item row="0" column="1">
             <widget class="QLineEdit" name="txt_description">
              <property name="enabled">
-              <bool>false</bool>
+              <bool>true</bool>
              </property>
             </widget>
            </item>
            <item row="0" column="0">
             <widget class="QLabel" name="lbl_description">
              <property name="enabled">
-              <bool>false</bool>
+              <bool>true</bool>
              </property>
              <property name="text">
               <string>Plot description:</string>
