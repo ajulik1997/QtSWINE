@@ -21,7 +21,7 @@ Although originally designed for use with the [OffSpec reflectometer](https://ww
   - [Incompatible Customised McStas Installations](#incompatible-customised-mcstas-installations)
   - [Issues with Compiling Instrument Files](#issues-with-compiling-instrument-files)
   - [Installing to Non-root Directories](#installing-to-non-root-directories)
-  - [More About the Data File (.npz) Format](#more-about-the-data-file-(.npz)-format)
+  - [More About the Data File (.npz) Format](#more-about-the-data-file-(npz)-format)
 - [Built With](#built-With)
 - [Licencing](#licencing)
 - [Author](#author)
