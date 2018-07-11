@@ -21,7 +21,7 @@ Although originally designed for use with the [OffSpec reflectometer](https://ww
   - [Incompatible Customised McStas Installations](#incompatible-customised-mcstas-installations)
   - [Issues with Compiling Instrument Files](#issues-with-compiling-instrument-files)
   - [Installing to Non-root Directories](#installing-to-non-root-directories)
-  - [More About the Data File (.npz) Format](#more-about-the-data-file-(npz)-format)
+  - [More About the Data File (.npz) Format](#more-about-the-data-file-(.npz)-format)
 - [Built With](#built-With)
 - [Licencing](#licencing)
 - [Author](#author)
@@ -88,5 +88,5 @@ As part of a 2017 Summer Internship at [ISIS Neutron & Muon Source](https://www.
 
 * [**@willend**](https://github.com/willend) for putting up with my many [McCode](https://github.com/McStasMcXtrace/McCode) bug reports
 * [**@jfkcooper**](https://github.com/jfkcooper) for thoroughly troubleshooting and ironing out issues with my code
-* [**Talha Shameem**](mailto:Talha.Shameem.2015@live.rhul.ac.uk) for reviewing my code and providing GUI design feedback
+* [**Talha Shameem**](mailto:swalehkhan333@hotmail.com) for reviewing my code and providing GUI design feedback
 * [**@ukarim**](https://github.com/ukarim) for providing an excellent [dark theme](https://draculatheme.com/notepad-plus-plus/) for my [favourite editor](https://notepad-plus-plus.org/)
