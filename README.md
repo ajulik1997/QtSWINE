@@ -4,8 +4,8 @@ Although originally designed for use with the [OffSpec reflectometer](https://ww
 
 ## Table of Contents
 
-- [How It Works](#How-It-Works)
-  - [Features](#Features)
+- [How It Works](#how-it-works)
+  - [Features](#features)
 - [Getting Started](#Getting-Started)
   - [Prerequisites](#Prerequisistes)
   - [Installing](#Installing)
@@ -24,8 +24,8 @@ Although originally designed for use with the [OffSpec reflectometer](https://ww
   - [More About the Data File (.npz) Format](#More-About-the-Data-File-(.npz)-Format)
 - [Built With](#Built-With)
 - [Licencing](#Licencing)
-- [Author](#Author)
-- [Acknowledgements](#Acknowledgements)
+- [Author](#author)
+- [Acknowledgements](#acknowledgements)
 
 ## How It Works
 
