@@ -7,7 +7,7 @@ Although originally designed for use with the [OffSpec reflectometer](https://ww
 - [How It Works](#how-it-works)
   - [Features](#features)
 - [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisistes)
+  - [Prerequisites](#prerequisites)
   - [Installing](#installing)
   - [Running Simulations](#running-simulations)
   - [Plotting Data](#plotting-data)
@@ -21,15 +21,34 @@ Although originally designed for use with the [OffSpec reflectometer](https://ww
   - [Incompatible Customised McStas Installations](#incompatible-customised-mcstas-installations)
   - [Issues with Compiling Instrument Files](#issues-with-compiling-instrument-files)
   - [Installing to Non-root Directories](#installing-to-non-root-directories)
-  - [More About the Data File (.npz) Format](#more-about-the-data-file-(.npz)-format)
-- [Built With](#built-With)
+  - [More About the Data File (.npz) Format](#more-about-the-data-file-npz-format)
+- [Built With](#built-with)
 - [Licencing](#licencing)
 - [Author](#author)
 - [Acknowledgements](#acknowledgements)
 
 ## How It Works
 
+This application works on the basic assumption that all neutron beamlines have three main components beyond the neutron moderator: two slits and a sample holder (any other components installed between ones already mentioned may be ignored, as long as they do not directly affect the shape or geometry of the beam).
+
+Assuming that the slits and sample holder are not free to move along the beam, you will be asked to select the position (as understood by McStas) of where the two slits and sample are fixed, respective to the design of your instrument file. These can be changed at any point, to allow you to experiment with slit positions that satisfy the required resolution of the instrument, while possibly increasing the neutron flux at the sample.
+
+The application then carries out Monte-Carlo simulations for every combination of slit widths that satisfy the maximum neutron footprint, using Python to calculate the allowed combinations, then using McStas to run the simulations, then finally using Python again to analyse the McStas data files, recording the neutron flux and resolution at every point.
+
+This data is saved to a ".npz" file, that can be viewed either as a heat map of neutron flux for every slit combination, or a graph of slit 2 widths against neutron intensity for every available resolution.
+
 ### Features
+
+- Supports McStas 2.4+
+- Installation includes default OffSpec instrument
+- Supports simulations using custom McStas instruments
+- Utilises built-in McStas GCC compiler for instrument compilation
+- Adjustable slit and sample holder positions, sample holder angle, and maximum neutron footprint
+- Adjustable pixel density and accuracy
+- Default settings provided for most input fields
+- Simulations are parallelised across all available cores
+- Supports saving/loading compressed simulation data
+- Interactive data plotting using matplotlib
 
 ## Getting Started
 
@@ -66,6 +85,7 @@ Although originally designed for use with the [OffSpec reflectometer](https://ww
 ## Built With
 
 * [**McStas 2.4.1** for Windows](http://mcstas.org/download/install_windows/)
+* [**GCC 5.3.0**](https://gcc.gnu.org/) packaged with McStas
 * [**Python 3.4.5**](https://www.python.org/downloads/) packaged with McStas using [Miniconda3](https://conda.io/miniconda.html)
 * [**PyQt4**](https://www.riverbankcomputing.com/software/pyqt/download) for connecting underlying processes to UI elements
 * [**Qt4 Designer**](http://doc.qt.io/archives/qt-4.8/designer-manual.html) for UI design
